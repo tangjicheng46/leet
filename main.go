@@ -1,11 +1,29 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+)
 
-func reverseWords(s string) string {
-	list := strings.Fields(s)
-	for i := 0; i < len(list)/2; i += 1 {
-		list[i], list[len(list)-1-i] = list[len(list)-1-i], list[i]
+func isMatch(s string, p string) bool {
+	if p == "" {
+		return s == ""
 	}
-	return strings.Join(list, " ")
+
+	firstMatch := false
+	if s != "" && (s[0] == p[0] || p[0] == '.') {
+		firstMatch = true
+	}
+
+	if len(p) >= 2 && p[1] == '*' {
+		return (isMatch(s, p[2:]) || (firstMatch && isMatch(s[1:], p)))
+	} else {
+		return firstMatch && isMatch(s[1:], p[1:])
+	}
+}
+
+func main() {
+	s := "mississippi"
+	p := "mis*is*p*."
+	result := isMatch(s, p)
+	fmt.Println(result) // 输出：true
 }

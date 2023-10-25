@@ -2,30 +2,34 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+using namespace std;
 
-std::string reverseWords(std::string s) {
-    std::vector<std::string> vec;
-    size_t i = 0, j = 0;
-    while (i < s.size()) {
-        if (s[i] != ' ') {
-            j = i;
-            while (j < s.size() && s[j] != ' ') {
-                j += 1;
-            }
-            std::string temp(s.begin() + i, s.begin() + j);
-            vec.push_back(temp);
-            i = j;
-        } else {
-            i += 1;
+bool isMatch(string s, string p) {
+    int m = s.length();
+    int n = p.length();
+    vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
+
+    // 空字符串与空模式匹配
+    dp[0][0] = true;
+
+    // 处理模式中的 * 字符
+    for (int j = 1; j <= n; ++j) {
+        if (p[j - 1] == '*') {
+            dp[0][j] = dp[0][j - 2];
         }
     }
-    std::string result;
-    for (size_t i = vec.size() - 1; i >= 1; i--) {
-        result += vec[i];
-        result += " ";
+
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (p[j - 1] == s[i - 1] || p[j - 1] == '.') {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else if (p[j - 1] == '*') {
+                dp[i][j] = dp[i][j - 2] || (dp[i - 1][j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.'));
+            }
+        }
     }
-    result += vec[0];
-    return result;
+
+    return dp[m][n];
 }
 
 int main() {

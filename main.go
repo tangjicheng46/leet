@@ -22,8 +22,8 @@ func isMatch(s string, p string) bool {
 }
 
 func main() {
-	s := "mississippi"
-	p := "mis*is*p*."
+	s := "b"
+	p := "a*b"
 	result := isMatch(s, p)
 	fmt.Println(result) // 输出：true
 }

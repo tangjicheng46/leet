@@ -1,3 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(cpp)
-add_executable(cpp_exec cpp/main.cpp)
+
+find_package(Boost REQUIRED)
+
+add_executable(cpp_exec main.cpp)
+
+target_link_libraries(cpp_exec Boost::boost)

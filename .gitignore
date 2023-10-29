@@ -1,5 +1,8 @@
 .vscode/
 build/
+*.jpeg
+*.jpg
+*.png
 
 # Prerequisites
 *.d

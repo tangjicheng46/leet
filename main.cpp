@@ -1,66 +1,63 @@
-#include <vector>
+#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
+#include <vector>
 
 std::vector<int> findSubstring(std::string s, std::vector<std::string>& words) {
-    std::vector<int> result;
-    if (s.empty() || words.empty()) {
-        return result;
-    }
-
-    int wordLen = words[0].size(); // 单个单词的长度
-    int totalLen = wordLen * words.size(); // 所有单词总长度
-    int sLen = s.size();
-
-    // 创建一个哈希表，用于记录words中每个单词的出现次数
-    std::unordered_map<std::string, int> wordCount;
-    for (const std::string& word : words) {
-        wordCount[word]++;
-    }
-
-    for (int i = 0; i < wordLen; i++) {
-        int left = i; // 滑动窗口的左边界
-        int right = i; // 滑动窗口的右边界
-        std::unordered_map<std::string, int> window; // 滑动窗口内的单词出现次数
-
-        while (right + wordLen <= sLen) {
-            std::string word = s.substr(right, wordLen);
-            right += wordLen;
-
-            // 如果word是words中的一个单词，将其加入窗口中
-            if (wordCount.find(word) != wordCount.end()) {
-                window[word]++;
-                // 如果窗口中某个单词的出现次数超过了在words中的出现次数，移动左边界
-                while (window[word] > wordCount[word]) {
-                    std::string leftWord = s.substr(left, wordLen);
-                    left += wordLen;
-                    window[leftWord]--;
-                }
-
-                // 如果窗口中所有单词的出现次数和总长度一致，说明找到了一个合法的子串
-                if (right - left == totalLen) {
-                    result.push_back(left);
-                }
-            }
-            // 如果word不在words中，重置窗口
-            else {
-                window.clear();
-                left = right;
-            }
-        }
-    }
-
+  std::vector<int> result;
+  if (s.empty() || words.empty()) {
     return result;
+  }
+  size_t sLen = s.size();
+  size_t wordCount = words.size();
+  size_t wordLen = words[0].size();
+
+  std::unordered_map<std::string, int> wordsMap;
+  for (const std::string& iter : words) {
+    if (wordsMap.find(iter) != wordsMap.end()) {
+      wordsMap[iter] += 1;
+    } else {
+      wordsMap[iter] = 1;
+    }
+  }
+
+  for (size_t i = 0; i < wordLen; i++) {
+    int left = i;
+    int right = i;
+    std::unordered_map<std::string, int> currentWordsMap;
+    while (right + wordLen <= sLen) {
+      std::string word = s.substr(right, wordLen);
+      right += wordLen;
+      if (wordsMap.find(word) != wordsMap.end()) {
+        if (currentWordsMap.find(word) != currentWordsMap.end()) {
+          currentWordsMap[word] += 1;
+        } else {
+          currentWordsMap[word] = 1;
+        }
+        while (currentWordsMap[word] > wordsMap[word]) {
+          std::string leftWord = s.substr(left, wordLen);
+          left += wordLen;
+          currentWordsMap[leftWord] -= 1;
+        }
+        if (right - left == wordLen * wordCount) {
+          result.push_back(left);
+        }
+      } else {
+        currentWordsMap.clear();
+        left = right;
+      }
+    }
+  }
+  return result;
 }
 
 int main() {
-    std::string s = "barfoothefoobarman";
-    std::vector<std::string> words = {"foo", "bar"};
-    std::vector<int> result = findSubstring(s, words);
-    for (int index : result) {
-        std::cout << index << " ";
-    }
-    std::cout << std::endl;
-    return 0;
+  std::string s = "barfoothefoobarman";
+  std::vector<std::string> words = {"foo", "bar"};
+  std::vector<int> result = findSubstring(s, words);
+  for (int index : result) {
+    std::cout << index << " ";
+  }
+  std::cout << std::endl;
+  return 0;
 }

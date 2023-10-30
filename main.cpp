@@ -1,33 +1,35 @@
 #include <iostream>
-#include <stack>
 
-int longestValidParentheses(std::string s) {
-    size_t maxLength = 0;
-    std::stack<int> st;
-    int start = -1;
-    for (size_t i = 0; i < s.size(); ++i) {
-      if (s[i] == '(') {
-        st.push(i);
-      } else {
-        if (st.empty()) {
-          start = i;
-        } else {
-          st.pop();
-          if (st.empty()) {
-            maxLength = std::max(maxLength, i - start);
-          } else {
-            maxLength = std::max(maxLength, i - st.top());
-          }
-        }
-      }
+double myPow(double x, int n) {
+    if (n == 0) {
+        return 1.0;
     }
-    return maxLength;
+    
+    if (n < 0) {
+        if (n == INT_MIN) {
+            return 1.0 / (x * myPow(x, -(n + 1)));
+        } else {
+            n = -n;
+            x = 1.0 / x;
+        }
+    }
+    
+    double result = 1.0;
+    while (n > 0) {
+        if (n % 2 == 1) {
+            result *= x;
+        }
+        x *= x;
+        n /= 2;
+    }
+    
+    return result;
 }
 
 int main() {
-    std::string s = "(()))())(";
-    int result = longestValidParentheses(s);
-    std::cout << "Length of longest valid parentheses substring: " << result << std::endl;
-
+    double x = 2.0;
+    int n = 10;
+    double result = myPow(x, n);
+    std::cout << x << " raised to the power " << n << " is: " << result << std::endl;
     return 0;
 }

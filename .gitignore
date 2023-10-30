@@ -3,6 +3,7 @@ build/
 *.jpeg
 *.jpg
 *.png
+node.md
 
 # Prerequisites
 *.d

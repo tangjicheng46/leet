@@ -1,27 +1,25 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
 std::vector<std::vector<int>> subsetsWithDup(std::vector<int>& nums) {
   std::vector<std::vector<int>> result;
-  std::vector<int> subset;
-  std::sort(nums.begin(), nums.end());  // 先对数组排序以处理重复元素
-  generateSubsets(nums, 0, subset, result);
+  std::sort(nums.begin(), nums.end());
+  std::vector<int> start_vec;
+  backtrack(result, 0, start_vec, nums);
   return result;
 }
 
-void generateSubsets(const std::vector<int>& nums, int index, std::vector<int>& subset,
-                     std::vector<std::vector<int>>& result) {
-  result.push_back(subset);  // 将当前子集添加到结果中
-
-  for (int i = index; i < nums.size(); ++i) {
-    // 处理重复元素，跳过重复元素
-    if (i > index && nums[i] == nums[i - 1]) {
+void backtrack(std::vector<std::vector<int>>& result, int start, std::vector<int>& current,
+               const std::vector<int>& nums) {
+  result.push_back(current);
+  for (int i = start; i < nums.size(); i++) {
+    if (i > start && nums[i] == nums[i - 1]) {
       continue;
     }
-
-    subset.push_back(nums[i]);                     // 将当前元素添加到子集中
-    generateSubsets(nums, i + 1, subset, result);  // 递归生成子集
-    subset.pop_back();                             // 回溯，移除最后一个元素
+    current.push_back(nums[i]);
+    backtrack(result, i + 1, current, nums);
+    current.pop_back();
   }
 }
 

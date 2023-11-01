@@ -1,35 +1,29 @@
 #include <iostream>
 #include <vector>
 
-void backtrack(std::vector<int>& nums, int start, std::vector<std::vector<int>>& result) {
-  if (start == nums.size()) {
-    result.push_back(nums);
+void backtrack(int start, const std::vector<int>& nums, std::vector<std::vector<int>>& result,
+               std::vector<int>& current) {
+  if (start >= nums.size()) {
+    result.push_back(current);
     return;
   }
 
-  for (int i = start; i < nums.size(); ++i) {
-    std::swap(nums[start], nums[i]);
-    backtrack(nums, start + 1, result);
-    std::swap(nums[start], nums[i]);
-  }
+  std::vector<int> current0(current);
+  std::vector<int> current1(current);
+  current1.push_back(nums[start]);
+  backtrack(start + 1, nums, result, current0);
+  backtrack(start + 1, nums, result, current1);
 }
 
-std::vector<std::vector<int>> permute(std::vector<int>& nums) {
+std::vector<std::vector<int>> subsets(std::vector<int>& nums) {
   std::vector<std::vector<int>> result;
-  backtrack(nums, 0, result);
+  std::vector<int> start_vec;
+  backtrack(0, nums, result, start_vec);
   return result;
 }
 
 int main() {
-  std::vector<int> nums = {1, 2, 3};
-  std::vector<std::vector<int>> permutations = permute(nums);
-
-  for (const auto& permutation : permutations) {
-    for (int num : permutation) {
-      std::cout << num << " ";
-    }
-    std::cout << std::endl;
-  }
+  std::cout << "Hello\n";
 
   return 0;
 }
